@@ -23,7 +23,7 @@ const getUserByGameNameAndTagLine = async (req, res) => {
         res.json({
             message: 'PUUID fetched successfully',
             puuid: puuid,
-            fullData: response.data
+            UserData: response.data
         });
     } catch (error) {
         console.error('Error fetching data:', error.response ? error.response.data : error.message);
@@ -48,7 +48,7 @@ const getUserMatches = async (req, res) => {
 
         const puuid = response.data.puuid;
 
-        const matchHistoryResponse = await axios.get(`https://americas.api.riotgames.com/riot/account/v1/accounts/${puuid}/matches`, {
+        const matchHistoryResponse = await axios.get(`https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}`, {
             headers: {
                 'X-Riot-Token': RIOT_API_KEY
             }
@@ -64,4 +64,4 @@ const getUserMatches = async (req, res) => {
     }
 };
 
-module.exports = { getUserByGameNameAndTagLine };
+module.exports = { getUserByGameNameAndTagLine, getUserMatches };
