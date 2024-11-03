@@ -78,22 +78,43 @@ const getUserMatches = async (req, res) => {
 };
 
 
-const getChallengerLeaderboard = async (req, res) => {
+
+const getChallengerLeaderboard = async (req, res) => {  
     try {
-        const response = await axios.get(`https://na1.api.riotgames.com/tft/league/v1/challenger?queue=RANKED_TFT`, {
+        const response = await axios.get('https://sg2.api.riotgames.com/tft/league/v1/challenger', {
             headers: {
                 'X-Riot-Token': RIOT_API_KEY
             }
-        });        
+        });
 
         res.json({
             message: 'Challenger leaderboard fetched successfully',
             leaderboard: response.data
         });
 
-    } catch(error){
+    } catch (error) {
         console.error('Error fetching data:', error.response ? error.response.data : error.message);
         res.status(500).send('Error connecting to Riot API');
     }
-}
-module.exports = { getUserByGameNameAndTagLine, getUserMatches, getChallengerLeaderboard } 
+};  
+
+const getMasterLeaderboard = async (req, res) => {
+    try {
+        const response = await axios.get('https://na1.api.riotgames.com/tft/league/v1/master', {
+            headers: {
+                'X-Riot-Token': RIOT_API_KEY
+            }
+        });
+
+        res.json({
+            message: 'Master leaderboard fetched successfully',
+            leaderboard: response.data
+        });
+
+    } catch (error) {
+        console.error('Error fetching data:', error.response ? error.response.data : error.message);
+        res.status(500).send('Error connecting to Riot API');
+    }
+};
+
+module.exports = { getUserByGameNameAndTagLine, getUserMatches, getChallengerLeaderboard, getMasterLeaderboard }; 

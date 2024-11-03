@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const userRoutes = require('./routes/user.routes.js');
+const leadboardRoutes = require('./routes/leaderboard.routes.js');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const PORT = process.env.PORT || 3000;
@@ -16,7 +17,8 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/api/user', userRoutes);
+app.use('/tft', userRoutes);
+app.use('/', leadboardRoutes);                                                      
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
