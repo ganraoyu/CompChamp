@@ -48,15 +48,28 @@ const getUserMatches = async (req, res) => {
 
         const puuid = response.data.puuid;
 
-        const matchHistoryResponse = await axios.get(`https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}`, {
+        const matchHistoryResponse = await axios.get(`https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}/ids`, {
             headers: {
                 'X-Riot-Token': RIOT_API_KEY
             }
         });
 
+        const matchIds = matchHistoryResponse.data;
+
+        const matchDetailsPromises = matchIds.map(matchId =>
+            axios.get(`https://americas.api.riotgames.com/tft/match/v1/matches/${matchId}`, {
+                headers: {
+                    'X-Riot-Token': RIOT_API_KEY
+                }
+            })
+        );
+
+        const matchDetailsResponses = await Promise.all(matchDetailsPromises);
+        const matchDetails = matchDetailsResponses.map(response => response.data);
+
         res.json({
             message: 'Match history fetched successfully',
-            matchHistory: matchHistoryResponse.data
+            matchHistory: matchDetails
         });
     } catch (error) {
         console.error('Error fetching data:', error.response ? error.response.data : error.message);
@@ -64,4 +77,23 @@ const getUserMatches = async (req, res) => {
     }
 };
 
-module.exports = { getUserByGameNameAndTagLine, getUserMatches };
+
+const getChallengerLeaderboard = async (req, res) => {
+    try {
+        const response = await axios.get(`https://na1.api.riotgames.com/tft/league/v1/challenger?queue=RANKED_TFT`, {
+            headers: {
+                'X-Riot-Token': RIOT_API_KEY
+            }
+        });        
+
+        res.json({
+            message: 'Challenger leaderboard fetched successfully',
+            leaderboard: response.data
+        });
+
+    } catch(error){
+        console.error('Error fetching data:', error.response ? error.response.data : error.message);
+        res.status(500).send('Error connecting to Riot API');
+    }
+}
+module.exports = { getUserByGameNameAndTagLine, getUserMatches, getChallengerLeaderboard } 
