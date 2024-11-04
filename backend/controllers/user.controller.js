@@ -32,7 +32,7 @@ const getUserByGameNameAndTagLine = async (req, res) => {
     }
 };
 
-const getUserMatches = async (req, res) => {
+    const getUserMatches = async (req, res) => {
     const { gameName, tagLine } = req.params;
 
     if (!gameName || !tagLine) {
@@ -81,7 +81,7 @@ const getUserMatches = async (req, res) => {
 
 const getChallengerLeaderboard = async (req, res) => {  
     try {
-        const response = await axios.get('https://sg2.api.riotgames.com/tft/league/v1/challenger', {
+        const response = await axios.get('https://na1.api.riotgames.com/tft/league/v1/challenger', {
             headers: {
                 'X-Riot-Token': RIOT_API_KEY
             }
