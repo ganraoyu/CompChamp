@@ -6,7 +6,7 @@ const axios = require('axios');
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const RIOT_API_KEY = process.env.RIOT_API_KEY; 
 
-const userProfileStats = async (req, res) => {
+const userWinRate = async (req, res) => {
     if(!gameName || !tagLine) {
         return res.status(400).send('Please provide both gameName and tagLine as path parameters.');
     }
@@ -36,24 +36,17 @@ const userProfileStats = async (req, res) => {
             })
         );
 
-        const matchDetails = await Promise.all(matchDetailsPromises);
-
-        const stats = matchDetails.map(match => {
-            return {
-                matchId: match.data.metadata.match_id,
-                placement: match.data.info.placement,
-                time: match.data.info.game_datetime,
-                participants: match.data.info.participants
-            }
-        });
+        const matchDetailsResponses = await Promise.all(matchDetailsPromises);
+        const matchDetails = matchDetailsResponses.map(response => response.data);
 
         res.json({
-            message: 'Stats fetched successfully',
-            stats: stats
+            message: 'Match history fetched successfully',
+            matchHistory: matchDetails
         });
+        
     } catch(error){
 
     }
 }
 
-module.exports = { userProfileStats }
+module.exports = { userWinRate };

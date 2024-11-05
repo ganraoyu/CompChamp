@@ -3,7 +3,8 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const userRoutes = require('./routes/user.routes.js');
-const leadboardRoutes = require('./routes/leaderboard.routes.js');
+const leaderboardRoutes = require('./routes/leaderboard.routes.js');
+const statsRoutes = require('./routes/stats.routes.js');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const PORT = process.env.PORT || 3000;
@@ -17,7 +18,8 @@ app.get('/', (req, res) => {
 
 
 app.use('/tft', userRoutes);
-app.use('/', leadboardRoutes);                                                      
+app.use('/', leaderboardRoutes);      
+app.use('/stats', statsRoutes);                                                
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
