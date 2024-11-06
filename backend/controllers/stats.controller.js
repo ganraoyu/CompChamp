@@ -7,6 +7,9 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const RIOT_API_KEY = process.env.RIOT_API_KEY; 
 
 const userWinRate = async (req, res) => {
+
+    const { gameName, tagLine } = req.params;
+
     if(!gameName || !tagLine) {
         return res.status(400).send('Please provide both gameName and tagLine as path parameters.');
     }
@@ -39,13 +42,18 @@ const userWinRate = async (req, res) => {
         const matchDetailsResponses = await Promise.all(matchDetailsPromises);
         const matchDetails = matchDetailsResponses.map(response => response.data);
 
-        res.json({
-            message: 'Match history fetched successfully',
-            matchHistory: matchDetails
-        });
-        
-    } catch(error){
 
+        if (matchDetails[0].info.participants.find(
+            participant => participant.puuid
+        ).placement === 1){
+            res.json({
+                message: `${puuid} has a 100% win rate`,
+                winRate: 100
+            });
+        }
+    } catch(error){
+        console.error('Error fetching data:', error.response ? error.response.data : error.message);
+        res.status(500).send('Error connecting to Riot API');
     }
 }
 

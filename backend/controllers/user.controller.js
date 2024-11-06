@@ -69,7 +69,7 @@ const getUserByGameNameAndTagLine = async (req, res) => {
 
         res.json({
             message: 'Match history fetched successfully',
-            matchHistory: matchDetails
+            matchHistory: matchDetails[0]
         });
     } catch (error) {
         console.error('Error fetching data:', error.response ? error.response.data : error.message);
