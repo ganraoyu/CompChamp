@@ -42,14 +42,28 @@ const userWinRate = async (req, res) => {
         const matchDetailsResponses = await Promise.all(matchDetailsPromises);
         const matchDetails = matchDetailsResponses.map(response => response.data);
 
-        if (matchDetails[0].info.participants.find(
-            participant => participant.puuid
-        ).placement === 1){
-            res.json({
-                message: `${puuid} has a 100% win rate`,
-                winRate: 100
-            });
-        }
+        
+        const userWinResults = matchDetails.map(matches =>{
+
+            const participant = matches.info.participants.find(
+                participant => participant.puuid === puuid
+            );
+
+            return participant ? participant.win === true : false;
+
+        })
+            
+        const wins = userWinResults.filter(result => result === true).length;
+        const totalGames = userWinResults.length;
+        const winRate = wins / totalGames * 100;
+
+        res.json({
+            message: `${gameName}#${tagLine} has a ${winRate}% win rate`,
+            matchDetails: matchDetails,
+        });  
+
+        /* only for recent 20 matches */
+
     } catch(error){
         console.error('Error fetching data:', error.response ? error.response.data : error.message);
         res.status(500).send('Error connecting to Riot API');
