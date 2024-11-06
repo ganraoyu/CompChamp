@@ -59,7 +59,6 @@ const userWinRate = async (req, res) => {
 
         res.json({
             message: `${gameName}#${tagLine} has a ${winRate}% win rate`,
-            matchDetails: matchDetails,
         });  
 
         /* only for recent 20 matches */
