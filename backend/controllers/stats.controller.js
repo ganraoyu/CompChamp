@@ -42,7 +42,6 @@ const userWinRate = async (req, res) => {
         const matchDetailsResponses = await Promise.all(matchDetailsPromises);
         const matchDetails = matchDetailsResponses.map(response => response.data);
 
-
         if (matchDetails[0].info.participants.find(
             participant => participant.puuid
         ).placement === 1){
