@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const  { getChallengerLeaderboard, getMasterLeaderboard } = require('../controllers/user.controller');
+const  { getChallengerLeaderboard, getMasterLeaderboard, getGrandmasterLeaderboard } = require('../controllers/leaderBoard.controller.js');
 
-router.get('/ranks/challenger', getChallengerLeaderboard);
-router.get('/ranks/master', getMasterLeaderboard);
+router.get('/challenger', getChallengerLeaderboard);
+router.get('/grandmaster', getGrandmasterLeaderboard);
+router.get('/master', getMasterLeaderboard);
 
 module.exports = router;

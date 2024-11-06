@@ -69,4 +69,12 @@ const userWinRate = async (req, res) => {
     }
 }
 
+const userMostPlayedTraits = async (req, res) => {
+    try{
+
+    } catch(error){
+        console.error('Error fetching data:', error.response ? error.response.data : error.message);
+        res.status(500).send('Error connecting to Riot API');
+    }
+}
 module.exports = { userWinRate };
