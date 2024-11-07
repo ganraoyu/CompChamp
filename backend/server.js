@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 
 app.use('/tft', userRoutes);
-app.use('/ranks', leaderboardRoutes);      
+app.use('/leaderboard', leaderboardRoutes);      
 app.use('/stats', statsRoutes);                                                
 
 app.listen(PORT, () => {
