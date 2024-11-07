@@ -5,7 +5,7 @@ const axiosClient = require('../utils/axiosClient');
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const RIOT_API_KEY = process.env.RIOT_API_KEY; 
 
-const getUserByGameNameAndTagLine = async (req, res) => {
+const getPlayerByGameNameAndTagLine = async (req, res) => {
 
     const { gameName, tagLine } = req.params;
 
@@ -23,7 +23,7 @@ const getUserByGameNameAndTagLine = async (req, res) => {
         
         res.json({
             puuid: puuid,
-            UserData: response.data
+            PlayerData: response.data
         });
         
     } catch (error) {
@@ -33,7 +33,7 @@ const getUserByGameNameAndTagLine = async (req, res) => {
     }
 };
 
-const getUserMatches = async (req, res) => {
+const getPlayerMatches = async (req, res) => {
     const { gameName, tagLine } = req.params;
 
     if (!gameName || !tagLine) {
@@ -73,4 +73,4 @@ const getUserMatches = async (req, res) => {
     }
 };
 
-module.exports = { getUserByGameNameAndTagLine, getUserMatches }; 
+module.exports = { getPlayerByGameNameAndTagLine, getPlayerMatches }; 

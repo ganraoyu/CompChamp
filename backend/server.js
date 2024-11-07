@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const express = require('express');
 const app = express();
-const userRoutes = require('./routes/user.routes.js');
+const userRoutes = require('./routes/player.routes.js');
 const leaderboardRoutes = require('./routes/leaderboard.routes.js');
 const statsRoutes = require('./routes/stats.routes.js');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/tft', userRoutes);
+app.use('/player', userRoutes);
 app.use('/leaderboard', leaderboardRoutes);      
 app.use('/stats', statsRoutes);                                                
 
