@@ -67,14 +67,17 @@ const getUserMatches = async (req, res) => {
         const matchDetailsResponses = await Promise.all(matchDetailsPromises);
         const matchDetails = matchDetailsResponses.map(response => response.data);
 
+        /* 
         const winStatuses = matchDetails.map(match => {
             const participant = match.info.participants.find(p => p.puuid === puuid);
             return participant ? participant.win : null;
         });
+        */
 
         res.json({
             message: 'Match history fetched successfully',
-            winStatuses: winStatuses
+            /* winStatuses: winStatuses */
+            matchDetails: matchDetails[0]
         });
     } catch (error) {
         console.error('Error fetching data:', error.response ? error.response.data : error.message);
