@@ -65,7 +65,6 @@ const getUserMatches = async (req, res) => {
 
         res.json({
             message: 'Match history fetched successfully',
-            /* winStatuses: winStatuses */
             matchDetails: matchDetails
         });
     } catch (error) {

@@ -4,9 +4,10 @@ const path = require('path');
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const RIOT_API_KEY = process.env.RIOT_API_KEY;
 
-const getLeaderboard = async (endpoint, res, rank) => {
+const getLeaderboard = async (endpoint, res, rank, region) => {
     try {
-        const response = await axios.get(`https://na1.api.riotgames.com/tft/league/v1/${endpoint}`, {
+        const baseURL = `https://${region}.api.riotgames.com`;  // Use dynamic region in the URL
+        const response = await axios.get(`${baseURL}/tft/league/v1/${endpoint}`, {
             headers: {
                 'X-Riot-Token': RIOT_API_KEY
             }
@@ -23,7 +24,10 @@ const getLeaderboard = async (endpoint, res, rank) => {
     }
 };
 
-const getChallengerLeaderboard = (req, res) => getLeaderboard('challenger', res, 'Challenger');
+const getChallengerLeaderboard = (req, res) => {
+    const region = req.params.region;
+    getLeaderboard('challenger', res, 'Challenger', region);
+};
 const getGrandmasterLeaderboard = (req, res) => getLeaderboard('grandmaster', res, 'Grandmaster');
 const getMasterLeaderboard = (req, res) => getLeaderboard('master', res, 'Master');
 

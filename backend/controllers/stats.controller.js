@@ -19,6 +19,9 @@ const userWinRate = async (req, res) => {
         const response = await axiosClient.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
         const puuid = response.data.puuid;
 
+        if(!puuid){
+            return res.status(404).send('Puuid not found');
+        }
         const matchHistoryResponse = await axiosClient.get(`/tft/match/v1/matches/by-puuid/${puuid}/ids`);
 
         const matchIds = matchHistoryResponse.data;
