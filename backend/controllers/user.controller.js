@@ -1,23 +1,20 @@
 const dotenv = require('dotenv');
 const axios = require('axios');
 const path = require('path');
+const axiosClient = require('../utils/axiosClient');
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const RIOT_API_KEY = process.env.RIOT_API_KEY; 
 
 const getUserByGameNameAndTagLine = async (req, res) => {
+
     const { gameName, tagLine } = req.params;
 
     if (!gameName || !tagLine) {
         return res.status(400).send('Please provide both gameName and tagLine as path parameters.');
     }
-
+    
     try {
-        const response = await axios.get(`https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`, {
-            headers: {
-                'X-Riot-Token': RIOT_API_KEY
-            }
-        });
-
+        const response = await axiosClient.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
         const puuid = response.data.puuid;
 
         res.json({
@@ -40,28 +37,15 @@ const getUserMatches = async (req, res) => {
     }
 
     try {
-        const response = await axios.get(`https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`, {
-            headers: {
-                'X-Riot-Token': RIOT_API_KEY
-            }
-        });
-
+        const response = await axiosClient.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
         const puuid = response.data.puuid;
 
-        const matchHistoryResponse = await axios.get(`https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}/ids`, {
-            headers: {
-                'X-Riot-Token': RIOT_API_KEY
-            }
-        });
+        const matchHistoryResponse = await axiosClient.get(`/tft/match/v1/matches/by-puuid/${puuid}/ids`);
 
         const matchIds = matchHistoryResponse.data;
 
         const matchDetailsPromises = matchIds.map(matchId =>
-            axios.get(`https://americas.api.riotgames.com/tft/match/v1/matches/${matchId}`, {
-                headers: {
-                    'X-Riot-Token': RIOT_API_KEY
-                }
-            })
+            axiosClient.get(`/tft/match/v1/matches/${matchId}`)
         );
 
         const matchDetailsResponses = await Promise.all(matchDetailsPromises);
