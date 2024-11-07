@@ -15,13 +15,17 @@ const getUserByGameNameAndTagLine = async (req, res) => {
     
     try {
         const response = await axiosClient.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
-        const puuid = response.data.puuid;
+        const puuid = response.data.puuid
 
+        if (!puuid) {
+            return res.status(404).json({ error: "Puuid not found" });
+        }
+        
         res.json({
-            message: 'PUUID fetched successfully',
             puuid: puuid,
             UserData: response.data
         });
+        
     } catch (error) {
         console.error('Error fetching data:', error.response ? error.response.data : error.message);
         res.status(500).send('Error connecting to Riot API');
@@ -40,9 +44,17 @@ const getUserMatches = async (req, res) => {
         const response = await axiosClient.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
         const puuid = response.data.puuid;
 
+        if(!puuid){
+            return res.status(404).json({ error: "Puuid not Found"})
+        }
+
         const matchHistoryResponse = await axiosClient.get(`/tft/match/v1/matches/by-puuid/${puuid}/ids`);
 
         const matchIds = matchHistoryResponse.data;
+
+        if (!matchIds || matchIds.length === 0) {
+            return res.status(404).json({ error: 'No matches found for this player' });
+        }
 
         const matchDetailsPromises = matchIds.map(matchId =>
             axiosClient.get(`/tft/match/v1/matches/${matchId}`)
@@ -51,17 +63,10 @@ const getUserMatches = async (req, res) => {
         const matchDetailsResponses = await Promise.all(matchDetailsPromises);
         const matchDetails = matchDetailsResponses.map(response => response.data);
 
-        /* 
-        const winStatuses = matchDetails.map(match => {
-            const participant = match.info.participants.find(p => p.puuid === puuid);
-            return participant ? participant.win : null;
-        });
-        */
-
         res.json({
             message: 'Match history fetched successfully',
             /* winStatuses: winStatuses */
-            matchDetails: matchDetails[0]
+            matchDetails: matchDetails
         });
     } catch (error) {
         console.error('Error fetching data:', error.response ? error.response.data : error.message);
