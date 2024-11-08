@@ -7,34 +7,36 @@ const axiosClient = require('../utils/axiosClient');
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const RIOT_API_KEY = process.env.RIOT_API_KEY; 
 
-const userWinRate = async (req, res) => {
+const playerWinRate = async (req, res) => {
 
-    const { gameName, tagLine } = req.params;
+    const { gameName, tagLine, region } = req.params;
 
     if(!gameName || !tagLine) {
         return res.status(400).send('Please provide both gameName and tagLine as path parameters.');
     }
 
     try{
-        const response = await axiosClient.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
+        const client = axiosClient(region);
+
+        const response = await client.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
         const puuid = response.data.puuid;
 
         if(!puuid){
             return res.status(404).send('Puuid not found');
         }
-        const matchHistoryResponse = await axiosClient.get(`/tft/match/v1/matches/by-puuid/${puuid}/ids`);
+        const matchHistoryResponse = await client.get(`/tft/match/v1/matches/by-puuid/${puuid}/ids`);
 
-        const matchIds = matchHistoryResponse.data;
+        const matchIds = matchHistoryResponse.data.slice(0,20);
 
         const matchDetailsPromises = matchIds.map(matchId =>
-            axiosClient.get(`/tft/match/v1/matches/${matchId}`)
+            client.get(`/tft/match/v1/matches/${matchId}`)
         );
 
         const matchDetailsResponses = await Promise.all(matchDetailsPromises);
         const matchDetails = matchDetailsResponses.map(response => response.data);
 
         
-        const userWinResults = matchDetails.map(matches =>{
+        const playerWinResults = matchDetails.map(matches =>{
 
             const participant = matches.info.participants.find(
                 participant => participant.puuid === puuid
@@ -47,12 +49,13 @@ const userWinRate = async (req, res) => {
             }
         })
             
-        const wins = userWinResults.filter(result => result === true).length;
-        const totalGames = userWinResults.length;
-        const winRate = wins / totalGames * 100;
+        const totalWins = playerWinResults.filter(result => result === true).length;
+        const totalGames = playerWinResults.length;
+        const winRate = totalWins / totalGames * 100;
 
         res.json({
-            message: `${gameName}#${tagLine} has a ${winRate}% win rate`,
+            winRate: winRate,
+            totalWins: totalWins,
         });  
 
         /* only for recent 20 matches */ 
@@ -63,7 +66,7 @@ const userWinRate = async (req, res) => {
     }
 }
 
-const userMostPlayedTraits = async (req, res) => {
+const playerMostPlayedTraits = async (req, res) => {
 
     const { gameName, tagLine } = req.params;
 
@@ -104,4 +107,4 @@ const userMostPlayedTraits = async (req, res) => {
         res.status(500).send('Error connecting to Riot API');
     }
 }
-module.exports = { userWinRate };
+module.exports = { playerWinRate };

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { userWinRate } = require('../controllers/stats.controller');
+const { playerWinRate } = require('../controllers/stats.controller');
 
-router.get('/:gameName/:tagLine', userWinRate);
+router.get('/:region/:gameName/:tagLine', playerWinRate);
 
 module.exports = router;

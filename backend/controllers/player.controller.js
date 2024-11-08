@@ -37,21 +37,23 @@ const getPlayerByGameNameAndTagLine = async (req, res) => {
 };
 
 const getPlayerMatches = async (req, res) => {
-    const { gameName, tagLine } = req.params;
+    const { gameName, tagLine, region } = req.params;
 
     if (!gameName || !tagLine) {
         return res.status(400).send('Please provide both gameName and tagLine as path parameters.');
     }
 
     try {
-        const response = await axiosClient.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
+        const client = axiosClient(region);
+
+        const response = await client.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
         const puuid = response.data.puuid;
 
         if(!puuid){
             return res.status(404).json({ error: "Puuid not Found"})
         }
 
-        const matchHistoryResponse = await axiosClient.get(`/tft/match/v1/matches/by-puuid/${puuid}/ids`);
+        const matchHistoryResponse = await client.get(`/tft/match/v1/matches/by-puuid/${puuid}/ids`);
 
         const matchIds = matchHistoryResponse.data;
 
@@ -60,7 +62,7 @@ const getPlayerMatches = async (req, res) => {
         }
 
         const matchDetailsPromises = matchIds.map(matchId =>
-            axiosClient.get(`/tft/match/v1/matches/${matchId}`)
+            client.get(`/tft/match/v1/matches/${matchId}`)
         );
 
         const matchDetailsResponses = await Promise.all(matchDetailsPromises);
