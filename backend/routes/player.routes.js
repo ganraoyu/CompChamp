@@ -1,9 +1,8 @@
 const express = require('express');
-const { getPlayerByGameNameAndTagLine, getPlayerMatches } = require('../controllers/Player.controller');
+const { getPlayerByGameNameAndTagLine, getPlayerMatches } = require('../controllers/Player.controller.js');
 const router = express.Router();
 
-
-router.get('/:gameName/:tagLine', getPlayerByGameNameAndTagLine);
-router.get('/matches/:gameName/:tagLine', getPlayerMatches);
+router.get('/:region/:gameName/:tagLine', getPlayerByGameNameAndTagLine);
+router.get('/matches/:region/:gameName/:tagLine', getPlayerMatches);
 
 module.exports = router;

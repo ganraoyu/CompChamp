@@ -7,15 +7,17 @@ const RIOT_API_KEY = process.env.RIOT_API_KEY;
 
 const getPlayerByGameNameAndTagLine = async (req, res) => {
 
-    const { gameName, tagLine } = req.params;
-    const region = req.query.region;
+    const { gameName, tagLine, region } = req.params;
+
     
     if (!gameName || !tagLine) {
         return res.status(400).send('Please provide both gameName and tagLine as path parameters.');
     }
     
     try {
-        const response = await axiosClient.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
+        const client = axiosClient(region);
+
+        const response = await client.get(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
         const puuid = response.data.puuid
 
         if (!puuid) {
