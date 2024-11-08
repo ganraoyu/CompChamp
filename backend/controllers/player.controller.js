@@ -8,7 +8,8 @@ const RIOT_API_KEY = process.env.RIOT_API_KEY;
 const getPlayerByGameNameAndTagLine = async (req, res) => {
 
     const { gameName, tagLine } = req.params;
-
+    const region = req.query.region;
+    
     if (!gameName || !tagLine) {
         return res.status(400).send('Please provide both gameName and tagLine as path parameters.');
     }
@@ -67,6 +68,7 @@ const getPlayerMatches = async (req, res) => {
             message: 'Match history fetched successfully',
             matchDetails: matchDetails
         });
+
     } catch (error) {
         console.error('Error fetching data:', error.response ? error.response.data : error.message);
         res.status(500).send('Error connecting to Riot API');

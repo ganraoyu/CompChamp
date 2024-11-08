@@ -6,8 +6,10 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const RIOT_API_KEY = process.env.RIOT_API_KEY;
 
+const region = null
+
 const axiosClient = axios.create({
-    baseURL: 'https://americas.api.riotgames.com',
+    baseURL: `https://${region}.api.riotgames.com`,
     headers: {
         'X-Riot-Token': RIOT_API_KEY,
     },
