@@ -26,7 +26,7 @@ const playerWinRate = async (req, res) => {
         }
         const matchHistoryResponse = await client.get(`/tft/match/v1/matches/by-puuid/${puuid}/ids`);
 
-        const matchIds = matchHistoryResponse.data.slice(0,20);
+        const matchIds = matchHistoryResponse.data.slice(0,9);
 
         const matchDetailsPromises = matchIds.map(matchId =>
             client.get(`/tft/match/v1/matches/${matchId}`)

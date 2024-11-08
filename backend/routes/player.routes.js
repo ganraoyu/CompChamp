@@ -7,4 +7,3 @@ router.get('/matches/:region/:gameName/:tagLine', getPlayerMatches);
 
 module.exports = router;
 
-    
